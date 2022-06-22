@@ -66,6 +66,7 @@ func (e *F2PoolExporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- f2pool_hashes_last_day
 	ch <- f2pool_hashes_last_hour
 	ch <- f2pool_hashrate
+	ch <- f2pool_worker_shares_time
 }
 
 func (e *F2PoolExporter) Collect(ch chan<- prometheus.Metric) {
@@ -102,7 +103,7 @@ func (e *F2PoolExporter) Collect(ch chan<- prometheus.Metric) {
 			ch <- prometheus.MustNewConstMetric(f2pool_stale_hashes_rejected_last_hour, prometheus.GaugeValue, worker[3].(float64), currency, account, label)
 			ch <- prometheus.MustNewConstMetric(f2pool_stale_hashes_rejected_last_day, prometheus.GaugeValue, worker[5].(float64), currency, account, label)
 			t, e := time.Parse(time.RFC3339, worker[6].(string))
-			if e != nil {
+			if e == nil {
 				ch <- prometheus.MustNewConstMetric(f2pool_worker_shares_time, prometheus.GaugeValue, float64(t.Unix()), currency, account, label)
 			}
 		}
